@@ -1,4 +1,4 @@
-import discord, among_us
+import discord, among_us, screenshots
 
 # reference links
 # discord.py API reference: https://discordpy.readthedocs.io/en/latest/api.html#
@@ -21,6 +21,12 @@ async def on_message(message):
     
     if message.content.startswith('$among start'):
         await among_us.main(message)
+
+    if (message.content.startswith('$screenshot test')):
+        await screenshots.main(message)
+
+
+        
 
 token_file = open("resources\\token.txt", "r")
 token = token_file.read()
