@@ -24,6 +24,7 @@ async def on_message(message):
 
     if message.content == '$end':
         await message.channel.send('Goodbye')
+        print('logged out from {0.user}'.format(client))
         await client.logout()
 
 token_file = open("resources\\token.txt", "r")
