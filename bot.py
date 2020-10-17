@@ -20,12 +20,14 @@ async def on_message(message):
         await message.channel.send('pong')
     
     if message.content.startswith('$among start'):
-        await among_us.main(message)
+        await among_us.main(message, client)
 
     if message.content == '$end':
         await message.channel.send('Goodbye')
         print('logged out from {0.user}'.format(client))
         await client.logout()
+    if message.content =='$kick voice':
+        await message.author.move_to(None)
 
 token_file = open("resources\\token.txt", "r")
 token = token_file.read()
