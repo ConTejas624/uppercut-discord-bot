@@ -9,7 +9,7 @@ client = discord.Client()
 async def on_ready():
     print('logged in as {0.user}'.format(client))
 
-async def on_message():
+async def on_message(message):
     if message.author == client.user: # makes sure the bot does not trigger itself
         return
     
@@ -17,7 +17,7 @@ async def on_message():
         await message.channel.send('pong')
 
 token_file = open("resources\\token.txt", "r")
-token = file.read()
+token = token_file.read()
 token_file.close()
 
 client.run(token)
