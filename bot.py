@@ -9,6 +9,7 @@ client = discord.Client()
 async def on_ready():
     print('logged in as {0.user}'.format(client))
 
+@client.event
 async def on_message(message):
     if message.author == client.user: # makes sure the bot does not trigger itself
         return
