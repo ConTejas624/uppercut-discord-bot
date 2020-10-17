@@ -15,15 +15,15 @@ async def on_message(message):
     if message.author.bot: # does not respond to commands from a bot
         return
     
-    if message.content.startswith('>ping'):
+    if message.content.startswith('$ping'):
         await message.channel.send('pong')
     
-    if message.content.startswith('>among start'):
+    if message.content.startswith('$among start'):
         await among_us.main(message)
-    if message.content.startswith('>among end'):
+    if message.content.startswith('$among end'):
         await among_us.stop()
 
-    if message.content == '>end':
+    if message.content == '$end':
         await message.channel.send('Goodbye')
         print('logged out from {0.user}'.format(client))
         await client.logout()
