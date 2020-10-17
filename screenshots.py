@@ -1,15 +1,17 @@
 import pyautogui, time, pytesseract, discord
 
+# run these for libraries
 # py -3 -m pip install -U discord.py
 # py -3 -m pip install -U pytesseract
 # py -3 -m pip install -U pyautogui
 
 class Screenshots:
-    muted = False
-    gameContinues = True
+    muted = False # are players muted
+    gameContinues = True # should the game continue to run
+    gameRunning = True # check for endgame
     startMuteKeywords = {"imposter", "impostor", "shhhhhhh!", "shhhhhhh", "crewmate" "there", "are", "impostors", "shhh", "shh", "shhhh", "[]mpeostor"}
-    endGameUnmuteKeywords = {"defeat", "victory", "quit", "play", "again"}
-    returnToGameMuteKeywords = {"was", "not" , "an", "impostor", "ejected"}
+    endGameUnmuteKeywords = {"defeat", "victory", "quit", "play", "again", "victory\n\n"}
+    returnToGameMuteKeywords = {"was", "not", "an", "impostor", "ejected", "(skipped)", "skipped", "no", "one"}
     startDiscussionUnmuteKeywords = {"who", "is", "the", "impostor", "imposter?", "discuss", "discuss!", "dead", "body", "reported"}
 
     async def main(self, message):
@@ -18,19 +20,19 @@ class Screenshots:
                 self.muted == True
             if (self.muted == False):
                 await self.check_screenshot_mute(message, self.startMuteKeywords, "The game has begun. All players muted")
-        while (self.gameContinues):
-            while (self.muted == True):
+                time.sleep(5)
+        while (self.gameContinues == True):
+            while (self.muted == True and self.gameContinues):
                 await self.check_screenshot_mute(message, self.startDiscussionUnmuteKeywords, "The discussion has started. Alive players unmuted.")
-            while (self.muted == False):
+            while (self.muted == False and self.gameContinues):
                 await self.check_screenshot_mute(message, self.returnToGameMuteKeywords, "Voting has ended. All players muted.")
-        
-        await message.channel.send("Screenshot code tested")
+        await self.sendMessage(message, "The game has ended")
 
     async def sendMessage(self, message, print):
             await message.channel.send(print)
 
     async def check_screenshot_mute(self, message, keywords, mutingMessage):
-        time.sleep(3)
+        time.sleep(.5)
         screenshot = pyautogui.screenshot()
         screenshot.save("currentScreen.png")
         pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -40,14 +42,20 @@ class Screenshots:
         
         print (screenshot_words)
 
-        if len(screenshot_words.intersection(keywords)) > 0:
-            await self.sendMessage(message, mutingMessage)
-            if (self.muted == True):
-                self.muted = False
-            else:
-                self.muted = True
+        if len(screenshot_words.intersection(self.endGameUnmuteKeywords)) > 0:
+           await self.endGame()
+           print(self.gameContinues)
         else:
-            await self.sendMessage(message, "Error: No correct word has been found in the screenshot")
+            if len(screenshot_words.intersection(keywords)) > 0:
+                if (mutingMessage == "The game has ended"):
+                    self.gameRunning = False
+                await self.sendMessage(message, mutingMessage)
+                if (self.muted == True):
+                    self.muted = False
+                else:
+                    self.muted = True
+                #else:
+                #   await self.sendMessage(message, "No word found")
 
     async def endGame(self):
         self.gameContinues = False
@@ -55,5 +63,6 @@ class Screenshots:
 
     async def check_end_game(self, message):
         mutingMessage = "The game has ended"
-        await self.check_screenshot_mute(message, self.endGameUnmuteKeywords, mutingMessage)
+        while (self.gameRunning):
+            await self.check_screenshot_mute(message, self.endGameUnmuteKeywords, mutingMessage)
         await self.endGame()

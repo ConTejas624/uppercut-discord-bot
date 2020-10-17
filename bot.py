@@ -24,14 +24,14 @@ async def on_message(message):
     if message.content.startswith('$among start'):
         
         await among_us.main(message)
-        await screenshot.check_end_game(message)
+        # await screenshot.check_end_game(message)
         await screenshot.main(message)
 
     #if (message.content.startswith('$screenshot test')):
     #    await screenshot.main(message)
 
     if (message.content.startswith('$endgame')):
-        await screenshot.endGame()
+        await screenshot.check_end_game(message)
     
 
 
