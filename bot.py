@@ -7,12 +7,14 @@ import discord, among_us, screenshots
 
 client = discord.Client()
 
+
 @client.event
 async def on_ready():
     print('logged in as {0.user}'.format(client))
 
 @client.event
 async def on_message(message):
+    screenshot = screenshots.Screenshots()
     if message.author == client.user: # makes sure the bot does not trigger itself
         return
     
@@ -20,10 +22,17 @@ async def on_message(message):
         await message.channel.send('pong')
     
     if message.content.startswith('$among start'):
+        
         await among_us.main(message)
+        await screenshot.check_end_game(message)
+        await screenshot.main(message)
 
-    if (message.content.startswith('$screenshot test')):
-        await screenshots.main(message)
+    #if (message.content.startswith('$screenshot test')):
+    #    await screenshot.main(message)
+
+    if (message.content.startswith('$endgame')):
+        await screenshot.endGame()
+    
 
 
         
