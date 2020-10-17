@@ -13,7 +13,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.author == client.user: # makes sure the bot does not trigger itself
+    if message.author.bot: # does not respond to commands from a bot
         return
     
     if message.content.startswith('$ping'):
@@ -21,6 +21,10 @@ async def on_message(message):
     
     if message.content.startswith('$among start'):
         await among_us.main(message)
+
+    if message.content == '$end':
+        await message.channel.send('Goodbye')
+        await client.logout()
 
 token_file = open("resources\\token.txt", "r")
 token = token_file.read()
