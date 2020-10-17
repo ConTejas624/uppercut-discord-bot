@@ -1,0 +1,2 @@
+# ignore file containing discord bot token for security
+token.txt
