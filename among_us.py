@@ -14,9 +14,6 @@ async def main(message):
 
     await message.channel.send("Among Us mode initialized")
 
-
-    myThread = threading.Timer(1, set_mode)
-    myThread.start(message, v_channel, server)
     t = time.time()
     while running == True:
         await message.channel.send('clock')
@@ -27,6 +24,8 @@ async def main(message):
             await v_channel.set_permissions(server.default_role, speak = False)
         elif mode == 'talk' and last_mode != mode:
             await v_channel.set_permissions(server.default_role, overwrite = None)
+        elif mode == 'finish':
+            break
         last_mode = mode
         time.sleep(1-time.monotonic()%1)
     

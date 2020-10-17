@@ -3,7 +3,6 @@ import discord, among_us
 # reference links
 # discord.py API reference: https://discordpy.readthedocs.io/en/latest/api.html#
 # discord dev app portal: https://discord.com/developers/applications
-# execute another python script: https://stackoverflow.com/questions/3781851/run-a-python-script-from-another-python-script-passing-in-arguments
 
 client = discord.Client()
 
@@ -16,18 +15,18 @@ async def on_message(message):
     if message.author.bot: # does not respond to commands from a bot
         return
     
-    if message.content.startswith('$ping'):
+    if message.content.startswith('>ping'):
         await message.channel.send('pong')
     
-    if message.content.startswith('$among start'):
-        await among_us.main(message, client)
+    if message.content.startswith('>among start'):
+        await among_us.main(message)
+    if message.content.startswith('>among end'):
+        await among_us.stop()
 
-    if message.content == '$end':
+    if message.content == '>end':
         await message.channel.send('Goodbye')
         print('logged out from {0.user}'.format(client))
         await client.logout()
-    if message.content =='$kick voice':
-        await message.author.move_to(None)
 
 token_file = open("resources\\token.txt", "r")
 token = token_file.read()
