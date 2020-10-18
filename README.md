@@ -18,3 +18,4 @@ Uppercut is designed to automatically mute and unmute users in a voice channel o
 - Improve loops for better bot performance while running among_us.py
 - Easier to export: make the bot more accessible for others to download and use
 - Increase bot's ability to adapt to different resolutions and screen sizes.
+- Not sure if it is possible to override this behavior but server owners are unaffected by the mute permissions
