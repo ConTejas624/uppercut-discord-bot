@@ -1,4 +1,4 @@
-import discord, among_us, screenshots
+import discord, among_us, screenshots, deadplayers
 
 # reference links
 # discord.py API reference: https://discordpy.readthedocs.io/en/latest/api.html#
@@ -15,6 +15,7 @@ async def on_ready():
 async def on_message(message):
     # if message.author == client.user: # makes sure the bot does not trigger itself
     amongus = among_us.AmongUs()
+    dead = deadplayers.DeadPlayers()
     if message.author.bot: # does not respond to commands from a bot
         return
     
@@ -44,6 +45,9 @@ async def on_message(message):
         await message.channel.send('Goodbye! Thank you for using the Uppercut Discord Bot for Among Us!')
         print('logged out from {0.user}'.format(client))
         await client.logout()
+
+    if message.content == '$dead test':
+        await dead.main()
 
 token_file = open("resources\\token.txt", "r")
 token = token_file.read()
