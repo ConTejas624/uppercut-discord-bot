@@ -1,4 +1,5 @@
-import discord, time, threading, screenshots
+import discord, time, screenshots
+import datetime
 
 # runs Among Us mode code
 
@@ -6,39 +7,56 @@ class AmongUs:
     running = True
     screenshot = screenshots.Screenshots()
 
-    async def main(self, message):
+    async def main(self, message, usernames, player_names):
         if message.author.voice is None:    # Checks that the user who called the command is in a voice channel
             await message.channel.send("Error: join a voice channel in the server first")
             return
 
         v_channel = message.author.voice.channel
+        t_channel = message.channel
         server = message.guild
+        my_role = None
 
-        await message.channel.send("Among Us mode initialized")
+        has_unmuted_role = False
+        for role in server.roles:
+            if role.name == 'unmuted-Uppercut':
+                has_unmuted_role = True
+                my_role = role
+        if not has_unmuted_role:
+            my_role = await server.create_role()
+            await my_role.edit(name = 'unmuted-Uppercut')
 
-        #t = time.time()
-        while self.running == True:
-            last_mode = "first run"
+        await t_channel.send("Among Us mode initialized")
+
+        while running == True:
+            print(datetime.datetime.now())
+
+            last_mode = 'first run'
+
             await self.screenshot.main(message)
             mode = self.screenshot.mode
-            print(mode)
-           
-            if mode == "silence" and last_mode != mode:
-                await v_channel.set_permissions(server.default_role, speak = False)
-                print("silence")
-            elif mode == "talk" and last_mode != mode:
-                await v_channel.set_permissions(server.default_role, overwrite = None)
-                print("talk")
-            elif mode == "finish":
-                self.running == False
-                print("finish")
+
+            await v_channel.set_permissions(server.default_role, speak = False)
+            for member in usernames:
+                await member.add_roles(my_role)
+            
+            if mode == 'silence' and last_mode != mode:
+                await v_channel.set_permissions(my_role, speak = False)
+            elif mode == 'talk' and last_mode != mode:
+                await v_channel.set_permissions(my_role, overwrite = None)
+            elif mode == 'finish':
+                await v_channel.set_permissions(my_role, overwrite = None)
                 break
             last_mode = mode
-            # await discord.utils.sleep_until(time.gmtime(time.time()+1))
-            # time.sleep(1-time.monotonic()%1)
-        
+
+            current_datetime = datetime.datetime.now()
+            date_time_rest = datetime.datetime(current_datetime.year, current_datetime.month, current_datetime.day, current_datetime.hour, current_datetime.minute, current_datetime.second + 1, current_datetime.microsecond)
+            await discord.utils.sleep_until(date_time_rest)
+    
         await v_channel.set_permissions(server.default_role, overwrite = None)
+        for member in usernames:
+            await member.remove_roles(my_role)
 
     async def stop(self):
-        self.running = False
+        running = False
         await self.screenshot.endGame()
