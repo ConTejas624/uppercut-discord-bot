@@ -4,19 +4,21 @@ import discord, time, threading
 
 running = True
 
-async def main(message):
+async def main(message, colors):
     if message.author.voice is None:    # Checks that the user who called the command is in a voice channel
         await message.channel.send("Error: join a voice channel in the server first")
         return
 
     v_channel = message.author.voice.channel
+    t_channel = message.channel
     server = message.guild
+    players = colors
 
-    await message.channel.send("Among Us mode initialized")
+    
+    await t_channel.send("Among Us mode initialized")
 
-    t = time.time()
+    #t = time.time()
     while running == True:
-
         last_mode = 'first run'
         mode = message.content[13:] # would call screenshots.main() once have that # 'silence' or 'talk'
         if mode == 'silence' and last_mode != mode:
@@ -26,7 +28,8 @@ async def main(message):
         elif mode == 'finish':
             break
         last_mode = mode
-        time.sleep(1-time.monotonic()%1)
+        await discord.utils.sleep_until(time.time()+1)
+        #time.sleep(1-time.monotonic()%1)
     
     await v_channel.set_permissions(server.default_role, overwrite = None)
 
