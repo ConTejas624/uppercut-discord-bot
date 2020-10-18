@@ -13,8 +13,8 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    screenshot = screenshots.Screenshots()
     # if message.author == client.user: # makes sure the bot does not trigger itself
+    amongus = among_us.AmongUs()
     if message.author.bot: # does not respond to commands from a bot
         return
     
@@ -23,7 +23,7 @@ async def on_message(message):
     
     if message.content.startswith('$among start'):
         
-        await among_us.main(message)
+        await amongus.main(message)
         # await screenshot.check_end_game(message)
         #await screenshot.main(message)
 
@@ -37,7 +37,7 @@ async def on_message(message):
 
         
     if message.content.startswith('$among end'):
-        await among_us.stop()
+        await amongus.stop()
 
     if message.content == '$end':
         await message.channel.send('Goodbye')
