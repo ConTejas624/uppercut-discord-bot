@@ -1,4 +1,4 @@
-import discord, time, threading
+import discord, time
 
 # runs Among Us mode code
 
@@ -18,7 +18,7 @@ async def main(message):
     while running == True:
 
         last_mode = 'first run'
-        mode = message.content[13:] # would call screenshots.main() once have that # 'silence' or 'talk'
+        mode = screenshots.main()# 'silence' or 'talk'
         if mode == 'silence' and last_mode != mode:
             await v_channel.set_permissions(server.default_role, speak = False)
         elif mode == 'talk' and last_mode != mode:
