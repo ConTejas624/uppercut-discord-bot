@@ -15,6 +15,8 @@ async def on_message(message):
     if message.author.bot: # does not respond to commands from a bot
         return
     
+    amongus = among_us.AmongUs()
+    
     if message.content.startswith('$ping'):
         await message.channel.send('pong')
     
@@ -38,12 +40,12 @@ async def on_message(message):
                 players.append(new_color.content)
                 usernames.append(new_color.author)
         
-        await among_us.main(message, usernames, players)
+        await amongus.main(message, usernames, players)
     if message.content.startswith('$among end'):
-        await among_us.stop()
+        await amongus.stop()
 
     if message.content == '$end':
-        await message.channel.send('Goodbye')
+        await message.channel.send('Goodbye! Thank you for using the Uppercut Discord Bot for Among Us!')
         print('logged out from {0.user}'.format(client))
         await client.logout()
 
