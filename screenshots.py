@@ -4,6 +4,7 @@ import pyautogui, time, pytesseract, discord
 # py -3 -m pip install -U discord.py
 # py -3 -m pip install -U pytesseract
 # py -3 -m pip install -U pyautogui
+# also need to install tesseract: https://github.com/tesseract-ocr/tesseract
 
 class Screenshots:
     muted = False # are players muted
@@ -16,9 +17,9 @@ class Screenshots:
     # keywords for the end of the game
     endGameUnmuteKeywords = {"defeat", "victory", "quit", "play", "again", "victory\n\n"}
     # keywords for returning from discussion back to the game
-    returnToGameMuteKeywords = {"was", "not", "an", "impostor", "ejected", "(skipped)", "skipped", "no", "one"}
+    returnToGameMuteKeywords = {"was", "not", "an", "ejected", "(skipped)", "skipped", "no", "one"}                         # 'imposter' removed due to overlap
     # keywords for starting the discussion period after a report or emergency meeting
-    startDiscussionUnmuteKeywords = {"who", "is", "the", "impostor", "imposter?", "discuss", "discuss!", "dead", "body", "reported"}
+    startDiscussionUnmuteKeywords = {"who", "is", "the", "imposter?", "discuss", "discuss!", "dead", "body", "reported"}    # 'imposter' removed due to overlap
 
     async def main(self, message):
         while (self.muted == False):
@@ -35,11 +36,11 @@ class Screenshots:
                 await self.check_screenshot_mute(message, self.returnToGameMuteKeywords, "Voting has ended. All players muted.")
         await self.sendMessage(message, "The game has ended") # game ended
 
-    async def sendMessage(self, message, print): # send message in Discord chat
-            await message.channel.send(print)
+    async def sendMessage(self, message, prt): # send message in Discord chat
+            await message.channel.send(prt)
 
     async def check_screenshot_mute(self, message, keywords, mutingMessage):
-        time.sleep(0.25)
+        time.sleep(0.125)
 
         # take screenshot of user screen with pyautogui
         screenshot = pyautogui.screenshot()
