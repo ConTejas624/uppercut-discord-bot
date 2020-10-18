@@ -1,4 +1,4 @@
-import discord, among_us
+import discord, among_us, screenshots
 
 # reference links
 # discord.py API reference: https://discordpy.readthedocs.io/en/latest/api.html#
@@ -6,12 +6,15 @@ import discord, among_us
 
 client = discord.Client()
 
+
 @client.event
 async def on_ready():
     print('logged in as {0.user}'.format(client))
 
 @client.event
 async def on_message(message):
+    # if message.author == client.user: # makes sure the bot does not trigger itself
+    amongus = among_us.AmongUs()
     if message.author.bot: # does not respond to commands from a bot
         return
     
@@ -41,6 +44,10 @@ async def on_message(message):
                 usernames.append(new_color.author)
         
         await amongus.main(message, usernames, players)
+    
+    if message.content.startswith('$help'):
+        await message.channel.send('Commands:\n$among start: start a game of Among Us\n$among end: end ongoing Among Us game\n$end: terminate Discord bot')
+
     if message.content.startswith('$among end'):
         await amongus.stop()
 
