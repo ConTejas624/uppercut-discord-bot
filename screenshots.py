@@ -43,7 +43,7 @@ class Screenshots:
 
         # take screenshot of user screen with pyautogui
         screenshot = pyautogui.screenshot()
-        screenshot.save("currentScreen.png")
+        screenshot.save("resources\\currentScreen.png")
 
         # convert image to text with pytesseract
         pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
