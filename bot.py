@@ -43,6 +43,7 @@ async def on_message(message):
             else:
                 players.append(new_color.content)
                 usernames.append(new_color.author)
+        players = ['Toast', 'PEENER', 'Masayoshi', 'windy', 'Sykkuno', 'Abe', 'jodi', 'Kris', 'Valkyrae', 'syd']
         await amongus.main(message, usernames, players)     # Call the amoung_us script main method
     
     if message.content.startswith('$help'):     # outputs directions for bot usage

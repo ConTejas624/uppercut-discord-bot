@@ -5,7 +5,6 @@ import discord, screenshots, deadplayers
 class AmongUs:
     running = True
     screenshot = screenshots.Screenshots()
-    deadplayer = deadplayers.DeadPlayers()
 
     async def main(self, message, usernames, player_names):
         if message.author.voice is None:    # Checks that the user who called the command is in a voice channel
@@ -33,8 +32,9 @@ class AmongUs:
         while running == True:
             last_mode = 'first run'
 
-            await self.screenshot.main(message)     # call main from screenshot to process the screen
+            await self.screenshot.main(message, player_names)     # call main from screenshot to process the screen
             mode = self.screenshot.mode             # set mode
+            dead_players = self.screenshot.dead_players
 
             await v_channel.set_permissions(server.default_role, speak = False) # disables talking in channel for @everyone
 
@@ -46,13 +46,17 @@ class AmongUs:
             if mode == 'silence' and last_mode != mode:
                 await v_channel.set_permissions(my_role, speak = False) # disable speaking for alive players
             elif mode == 'talk' and last_mode != mode:
-                dead_players = await self.deadplayer.main(player_names)
-                if not dead_players == None:
-                    for player in player_names:
-                        for dead in dead_players:
-                            if player == dead:
-                                disc_user = usernames[player_names.index(player)]
-                                await disc_user.remove_roles(my_role)
+                if dead_players == None:
+                    print('No dead')
+                else:
+                    await t_channel.send(dead_players)
+                    print(dead_players)
+                #if not dead_players == None:
+                #    for player in player_names:
+                #        for dead in dead_players:
+                #            if player == dead:
+                #                disc_user = usernames[player_names.index(player)]
+                #                await disc_user.remove_roles(my_role)
                 
                 await v_channel.set_permissions(my_role, overwrite = None) # enable talking for alive players
             elif mode == 'finish':
@@ -64,6 +68,16 @@ class AmongUs:
         
         for member in usernames:        #  remove custom role from everyone
             await member.remove_roles(my_role)
+        
+        # reset values in screenshots
+        self.screenshot.muted = False # are players muted
+        self.screenshot.gameContinues = True # should the game continue to run
+        self.screenshot.gameRunning = True # check for endgame
+        self.screenshot.mode = "first run"
+        self.screenshot.dead_players = []
+        self.screenshot.deadplayer = deadplayers.DeadPlayers()
+        self.screenshot.names = []
+
 
     async def stop(self):
         running = False

@@ -1,4 +1,4 @@
-import pyautogui, time, pytesseract, discord
+import pyautogui, time, pytesseract, discord, deadplayers
 
 # run these for libraries
 # py -3 -m pip install -U discord.py
@@ -11,17 +11,22 @@ class Screenshots:
     gameContinues = True # should the game continue to run
     gameRunning = True # check for endgame
     mode = "first run"
+    dead_players = []
+    deadplayer = deadplayers.DeadPlayers()
+    names = []
+
 
     # keywords for the start of the game
     startMuteKeywords = {"imposter", "impostor", "shhhhhhh!", "shhhhhhh", "crewmate" "there", "are", "impostors", "shhh", "shh", "shhhh", "[]mpeostor"}
     # keywords for the end of the game
     endGameUnmuteKeywords = {"defeat", "victory", "quit", "play", "again", "victory\n\n"}
     # keywords for returning from discussion back to the game
-    returnToGameMuteKeywords = {"was", "not", "an", "ejected", "(skipped)", "skipped", "no", "one"}                         # 'imposter' removed due to overlap
+    returnToGameMuteKeywords = {"was", "not", "an", "ejected", "(skipped)", "skipped", "no", "one"}             # 'imposter' removed due to overlap
     # keywords for starting the discussion period after a report or emergency meeting
-    startDiscussionUnmuteKeywords = {"who", "is", "the", "imposter?", "discuss", "discuss!", "dead", "body", "reported"}    # 'imposter' removed due to overlap
+    startDiscussionUnmuteKeywords = {"who", "is", "the", "imposter?", "discuss", "discuss!", "dead", "body", }  # 'imposter' removed due to overlap
 
-    async def main(self, message):
+    async def main(self, message, players):
+        self.names = players
         while (self.muted == False):
             if (self.gameContinues == False):
                 self.muted == True # end game
@@ -40,7 +45,6 @@ class Screenshots:
             await message.channel.send(prt)
 
     async def check_screenshot_mute(self, message, keywords, mutingMessage):
-        time.sleep(0.125)
 
         # take screenshot of user screen with pyautogui
         screenshot = pyautogui.screenshot()
@@ -65,6 +69,8 @@ class Screenshots:
                     self.mode = "silence"
                 elif (keywords == self.startDiscussionUnmuteKeywords):
                     self.mode = "talk"
+                    await self.deadplayer.main(self.names)
+                    self.dead_players = self.deadplayer.the_dead
                 elif (keywords == self.returnToGameMuteKeywords):
                     self.mode = "silence"
                 if (mutingMessage == "The game has ended"):

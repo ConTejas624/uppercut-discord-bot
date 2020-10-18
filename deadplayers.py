@@ -13,26 +13,28 @@ class DeadPlayers:
     horiz_offset = (657, 0, 0, 0)
     vert_offset = (-657, 138, 0, 0)
     bounds = [928, 764, 621, 107]
+    locations = (761, 623, 486, 350, 212)
     dead_pixel_color = (146, 73, 50)
     
     async def main(self, players):
         #skip_vote_loc = pyautogui.locateOnScreen('reference\\skip_vote.png')    # this will take 1-2 sec ona 1920x1080 screen
         x = 10
-        while x > len(players):
-            if self.column == 1:
-                self.bounds[0] = self.bounds[0] + 657
-                self.bounds[1] = self.bounds[1] - 138
-                self.column = 2
-            elif self.column == 2:
-                self.bounds[0] = self.bounds[0] - 657
-                self.column = 1
-        
-        for player in players:
-            if self.is_dead(self.bounds):
-                tup_bound = tuple(self.bounds)
-                self.the_dead.append(await self.read_name(tup_bound))
-            else:
-                return self.the_dead
+        while x > 0:
+            x = x - 1           
+            if x <= len(players):
+                if x%2==0:
+                    self.bounds[0] = 929
+                else:
+                    self.bounds[0] = 271
+                index = int(x/2)
+                self.bounds[1] = self.locations[index]
+                dead = await self.is_dead(self.bounds)
+                if dead:
+                    tup_bound = tuple(self.bounds)
+                    self.the_dead.append(await self.read_name(tup_bound))
+                else:
+                    self.the_dead = None
+                    return 
 
             
     
@@ -49,11 +51,9 @@ class DeadPlayers:
         # remove unneccessary characters and split into an array of words
         screenshot_words = set(screenshot_to_text.strip().strip("\n").strip("\\").strip("/").lower().split(" "))
     
-    def is_dead(self, bounds):
+    async def is_dead(self, bounds):
         x = bounds[0] + 53
         y = bounds[1] + 53
-        print(x)
-        print(y)
-        print()
+        print(pyautogui.pixel(x, y))
         return pyautogui.pixelMatchesColor(x, y, self.dead_pixel_color)
          
