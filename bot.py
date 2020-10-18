@@ -20,21 +20,25 @@ async def on_message(message):
     
     if message.content.startswith('$among start'):
         await message.channel.send('State your Among Us name (including capitcalization)')
-        def same_user(user):
-            return user == message.author
+        def same_user(m):
+            return m.author == message.author
         color = await client.wait_for('message', check=same_user)
-        players = [[message.author.id, color.content]]
-
-        getting_colors = True
-        await message.channel.send('all players please respond with their exact Among Us name, including capitalization in the format $player <name>')
-        while getting_colors:
-            def is_color(content):
-                return content.startswith('$player')
-            new_color = await client.wait_for('message', check=is_color)
-            temp = [new_color.author.id, new_color.content[7:]]
-            players.append(temp)
+        usernames = [message.author]    # Discord users
+        players = [color.content]       # Among Us names
         
-        await among_us.main(message, players)
+        await message.channel.send('All players please respond with their exact Among Us name, including capitalization in the format $player <name>')
+        await message.channel.send('Once all players have responded, please type \'$player done\'')
+        while True:
+            def is_color(m):
+                return m.content.startswith('$player')
+            new_color = await client.wait_for('message', check=is_color)
+            if new_color.content == '$player done':
+                break
+            else:
+                players.append(new_color.content)
+                usernames.append(new_color.author)
+        
+        await among_us.main(message, usernames, players)
     if message.content.startswith('$among end'):
         await among_us.stop()
 
