@@ -14,7 +14,7 @@ async def main(message):
 
     await message.channel.send("Among Us mode initialized")
 
-    t = time.time()
+    #t = time.time()
     while running == True:
 
         last_mode = 'first run'
@@ -26,7 +26,8 @@ async def main(message):
         elif mode == 'finish':
             break
         last_mode = mode
-        time.sleep(1-time.monotonic()%1)
+        await discord.utils.sleep_until(time.gmtime(time.time()+1))
+        #time.sleep(1-time.monotonic()%1)
     
     await v_channel.set_permissions(server.default_role, overwrite = None)
 
