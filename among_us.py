@@ -16,7 +16,6 @@ async def main(message):
 
     t = time.time()
     while running == True:
-        await message.channel.send('clock')
 
         last_mode = 'first run'
         mode = message.content[13:] # would call screenshots.main() once have that # 'silence' or 'talk'
