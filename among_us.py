@@ -6,7 +6,7 @@ class AmongUs:
     running = True
     screenshot = screenshots.Screenshots()
 
-    async def main(self, message, usernames, player_names):
+    async def main(self, message, usernames):
         if message.author.voice is None:    # Checks that the user who called the command is in a voice channel
             await message.channel.send("Error: join a voice channel in the server first")
             return
@@ -15,6 +15,7 @@ class AmongUs:
         v_channel = message.author.voice.channel
         t_channel = message.channel
         server = message.guild
+        running = True
 
         my_role = None
         has_unmuted_role = False
