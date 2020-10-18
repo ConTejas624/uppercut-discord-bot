@@ -35,7 +35,7 @@ class AmongUs:
                 break
             last_mode = mode
             # await discord.utils.sleep_until(time.gmtime(time.time()+1))
-            #time.sleep(1-time.monotonic()%1)
+            # time.sleep(1-time.monotonic()%1)
         
         await v_channel.set_permissions(server.default_role, overwrite = None)
 
